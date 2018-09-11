@@ -1,13 +1,18 @@
-FROM debian:stretch
+FROM golang:1.11 AS builder
 
-RUN DEBIAN_FRONTEND=noninteractive \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-    hugo \
-    python3-pygments \
-    && apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    mkdir -p /opt/blog
+ARG BUILD_TAGS="extended"
+ARG VERSION="v0.48"
+
+RUN go get github.com/magefile/mage && \
+    go get -d github.com/gohugoio/hugo && \
+    cd ${GOPATH}/src/github.com/gohugoio/hugo && \
+    git checkout "$HUGO_VERSION" && \
+    mage vendor && \
+    HUGO_BUILD_TAGS="$HUGO_BUILD_TAGS" mage install
+
+FROM scratch
+
+COPY --from=builder /go/bin/hugo /bin/hugo
 
 WORKDIR /opt/blog
 

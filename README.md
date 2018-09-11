@@ -9,4 +9,4 @@
 
 ---
 
-Hugo Docker Image featuring Python3 Pygments based on Debian Stretch.
+Minimal Hugo Docker Image with ARG-configurable Version and Build tags.
