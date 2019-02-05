@@ -1,14 +1,14 @@
 FROM golang:1.11 AS builder
 
-ARG BUILD_TAGS="extended"
-ARG VERSION="v0.48"
+ARG HUGO_BUILD_TAGS="extended"
+ARG VERSION="v0.54.0"
 
 RUN go get github.com/magefile/mage && \
     go get -d github.com/gohugoio/hugo && \
     cd ${GOPATH}/src/github.com/gohugoio/hugo && \
-    git checkout "$HUGO_VERSION" && \
-    mage vendor && \
-    HUGO_BUILD_TAGS="$HUGO_BUILD_TAGS" mage install
+    git checkout "$VERSION" && \
+    mage hugo && \
+    mage install
 
 FROM scratch
 
